@@ -120,6 +120,7 @@
     <Compile Include="ContainerSpecs.cs" />
     <Compile Include="CrazinessSpecs.cs" />
     <Compile Include="DependencyFactoryRegistrySpecs.cs" />
+    <Compile Include="DependencyFactorySpecs.cs" />
     <Compile Include="SecuredQuerySpecs.cs" />
     <Compile Include="ViewAReportSpecs.cs" />
     <Compile Include="FrontControllerSpecs.cs" />
