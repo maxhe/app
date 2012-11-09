@@ -82,7 +82,7 @@
     <Compile Include="MessageGenerator.cs" />
     <Compile Include="utility\containers\BasicContainer.cs" />
     <Compile Include="utility\containers\Container.cs" />
-    <Compile Include="utility\containers\ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem.cs" />
+    <Compile Include="utility\containers\i_create_the_exception_when_a_dependency_factory_cant_create_its_item.cs" />
     <Compile Include="utility\containers\IFetchDependencies.cs" />
     <Compile Include="utility\containers\IFindDependencyFactories.cs" />
     <Compile Include="utility\containers\IProvideAccessToTheContainerFacade.cs" />

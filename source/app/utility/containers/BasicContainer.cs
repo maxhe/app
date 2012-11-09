@@ -1,4 +1,6 @@
-﻿namespace app.utility.containers
+﻿using System;
+
+namespace app.utility.containers
 {
   public class BasicContainer : IFetchDependencies
   {
@@ -12,6 +14,11 @@
     public TDependency an<TDependency>()
     {
       return (TDependency) factories.get_the_factory_that_can_create(typeof(TDependency)).create();
+    }
+
+    public object an(Type dependency)
+    {
+      throw new NotImplementedException();
     }
   }
 }
