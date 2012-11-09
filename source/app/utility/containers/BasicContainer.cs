@@ -7,35 +7,23 @@ namespace app.utility.containers
     IFindDependencyFactories factories;
     ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem exception_factory;
 
-      public BasicContainer(IFindDependencyFactories factories, ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem exception_factory)
+    public BasicContainer(IFindDependencyFactories factories,
+                          ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem exception_factory)
     {
-        this.factories = factories;
-        this.exception_factory = exception_factory;
+      this.factories = factories;
+      this.exception_factory = exception_factory;
     }
 
-      public TDependency an<TDependency>()
+    public TDependency an<TDependency>()
     {
-        try
-        {
-            return (TDependency) factories.get_the_factory_that_can_create(typeof(TDependency)).create();
-        }
-        catch (Exception e)
-        {
-           throw exception_factory(typeof(TDependency), e);
-        }
-        
+      return (TDependency) an(typeof(TDependency));
     }
 
     public object an(Type dependency)
     {
-        try
-        {
-            return factories.get_the_factory_that_can_create(dependency).create();
-        }
-        catch (Exception e)
-        {
-            throw exception_factory(dependency, e);
-        }
+      return SyntaxSugar.to_run(factories.get_the_factory_that_can_create(dependency).create)
+        .on_error(e => exception_factory(dependency, e))
+        .run();
     }
   }
 }
