@@ -27,7 +27,7 @@ namespace app.specs
         };
 
         Because b = () =>
-            result = sut.get_the_factory_that_can_create(typeof(IDbConnection));
+            result = sut.get_the_factory_that_can_create(typeof(ICreateOneDependency));
 
         static ICreateOneDependency result;
 
