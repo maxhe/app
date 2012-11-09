@@ -1,4 +1,7 @@
-﻿ using Machine.Specifications;
+﻿ using System.Data;
+ using System.Data.Common;
+ using System.Data.SqlClient;
+ using Machine.Specifications;
  using app.utility.containers;
  using developwithpassion.specifications.rhinomocks;
  using developwithpassion.specifications.extensions;
@@ -15,11 +18,28 @@ namespace app.specs
     }
 
    
-    public class when_observation_name : concern
+    public class when_creating_a_dependency : concern
     {
-        
-      It first_observation = () =>        
-        
+        Establish c = () =>
+        {
+            the_dependency = new SqlConnection();
+            depends.on<ICreateADependencyInstance>((type) =>
+            {
+                type.ShouldEqual(typeof(IDbConnection));
+                return the_dependency;
+            });
+
+
+        };
+
+        Because b = () =>
+            result = sut.create();
+
+        It should_return_the_dependency = () =>
+            result.ShouldEqual(the_dependency);
+
+        static DbConnection the_dependency;
+        static object result;
     }
   }
 }
