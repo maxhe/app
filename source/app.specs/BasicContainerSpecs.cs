@@ -66,7 +66,7 @@ namespace app.specs
         static IDbConnection the_connection;
       }
 
-      public class and_the_factory_that_can_create_the_dependency_throws_an_error_while_creating_it
+      public class and_the_factory_that_can_create_the_dependency_fails_to_create_it
       {
         Establish c = () =>
         {
