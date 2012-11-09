@@ -41,9 +41,28 @@ namespace app.specs
         It should_return_the_factory_that_can_create_the_dependency = () =>
           result.ShouldEqual(the_dependency_factory);
 
+
         static ICreateOneDependency the_dependency_factory;
         static List<ICreateOneDependency> all_the_dependency_factories;
       }
+
+     public class and_it_does_not_have_the_dependency
+     {
+         Establish c = () =>
+         {
+             the_null_object = fake.an<ICreateOneDependency>();
+             all_the_dependency_factories = Enumerable.Range(1, 10).Select(x => fake.an<ICreateOneDependency>()).ToList();
+             depends.on<IEnumerable<ICreateOneDependency>>(all_the_dependency_factories);
+             depends.on<ICreateTheFactoryWhenDependencyFactoryIsNotFound>()(() => the_null_object);
+         };
+
+         It should_return_the_null_object_factory = () =>
+             result.ShouldEqual(the_null_object);
+         static ICreateOneDependency the_null_object;
+         static List<ICreateOneDependency> all_the_dependency_factories;
+     }
     }
   }
+
+    public delegate ICreateOneDependency ICreateTheFactoryWhenDependencyFactoryIsNotFound();
 }
