@@ -53,7 +53,7 @@ namespace app.specs
              the_null_object = fake.an<ICreateOneDependency>();
              all_the_dependency_factories = Enumerable.Range(1, 10).Select(x => fake.an<ICreateOneDependency>()).ToList();
              depends.on<IEnumerable<ICreateOneDependency>>(all_the_dependency_factories);
-             depends.on<ICreateTheFactoryWhenDependencyFactoryIsNotFound>()(() => the_null_object);
+             depends.on<ICreateTheFactoryWhenDependencyFactoryIsNotFound>(() => the_null_object);
          };
 
          It should_return_the_null_object_factory = () =>
@@ -63,6 +63,5 @@ namespace app.specs
      }
     }
   }
-
-    public delegate ICreateOneDependency ICreateTheFactoryWhenDependencyFactoryIsNotFound();
+    
 }
