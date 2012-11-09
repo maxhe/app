@@ -2,9 +2,16 @@
 {
   public class BasicContainer : IFetchDependencies
   {
+    IFindDependencyFactories factories;
+
+    public BasicContainer(IFindDependencyFactories factories)
+    {
+      this.factories = factories;
+    }
+
     public TDependency an<TDependency>()
     {
-      throw new System.NotImplementedException();
+      return (TDependency) factories.get_the_factory_that_can_create(typeof(TDependency)).create();
     }
   }
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Runtime.Serialization;
 using Machine.Specifications;
 using app.utility.containers;
@@ -7,31 +9,73 @@ using developwithpassion.specifications.rhinomocks;
 
 namespace app.specs
 {
-    [Subject(typeof(BasicContainer))]
-    public class BasicContainerSpecs
+  [Subject(typeof(BasicContainer))]
+  public class BasicContainerSpecs
+  {
+    public abstract class concern : Observes<IFetchDependencies,
+                                      BasicContainer>
     {
-        public abstract class concern : Observes<IFetchDependencies,
-                                          BasicContainer>
-        {
-        }
-
-        public class when_fetching_a_dependency : concern
-        {
-            Establish c = () =>
-            {
-                implementation_finder = depends.on<IFindImplementations<ISerializable>>();
-                fake_implementations = fake.an<IEnumerable<ISerializable>>();
-                implementation_finder.setup(x => x.list_all_implementations()).Return(fake_implementations);
-            };
-
-            Because b = () =>
-                sut.an<ISerializable>();
-
-            It should_delegate_finding_a_list_of_implementations_of_the_dependent_contract = () =>
-                implementation_finder.received(x => x.list_all_implementations());
-
-            static IFindImplementations<ISerializable> implementation_finder;
-            static IEnumerable<ISerializable> fake_implementations;
-        }
     }
+
+    public class when_fetching_a_dependency : concern
+    {
+      public class and_it_has_the_factory_that_can_create_the_dependency
+      {
+        Establish c = () =>
+        {
+          factories = depends.on<IFindDependencyFactories>();
+          the_connection = fake.an<IDbConnection>();
+          factory = fake.an<ICreateOneDependency>();
+
+          factory.setup(x => x.create()).Return(the_connection);
+
+          factories.setup(x => x.get_the_factory_that_can_create(typeof(IDbConnection))).Return(factory);
+        };
+
+        Because b = () =>
+          result = sut.an<IDbConnection>();
+
+        It should_return_the_item_created_by_the_factory_that_can_create_that_dependency = () =>
+          result.ShouldEqual(the_connection);
+
+        static IFindDependencyFactories factories;
+        static ICreateOneDependency factory;
+        static IDbConnection result;
+        static IDbConnection the_connection;
+
+      }
+
+      public class and_the_factory_that_can_create_the_dependency_throws_an_error_while_creating_it 
+      {
+        Establish c = () =>
+        {
+          factories = depends.on<IFindDependencyFactories>();
+          factory = fake.an<ICreateOneDependency>();
+          inner_exception = new Exception();
+          the_custom_exception = new Exception();
+
+          depends.on<ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem>((type,inner) =>
+          {
+            type.ShouldEqual(typeof(IDbConnection));
+            inner.ShouldEqual(inner_exception);
+            return the_custom_exception;
+          });
+
+          factory.setup(x => x.create()).Throw(inner_exception);
+          factories.setup(x => x.get_the_factory_that_can_create(typeof(IDbConnection))).Return(factory);
+        };
+
+        Because b = () =>
+          spec.catch_exception(() => sut.an<IDbConnection>());
+
+        It should_return_the_item_created_by_the_factory_that_can_create_that_dependency = () =>
+          spec.exception_thrown.ShouldEqual(the_custom_exception);
+
+        static IFindDependencyFactories factories;
+        static ICreateOneDependency factory;
+        static Exception the_custom_exception;
+        static Exception inner_exception;
+      }
+    }
+  }
 }
