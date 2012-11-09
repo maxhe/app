@@ -28,7 +28,14 @@ namespace app.utility.containers
 
     public object an(Type dependency)
     {
-      throw new NotImplementedException();
+        try
+        {
+            return factories.get_the_factory_that_can_create(dependency).create();
+        }
+        catch (Exception e)
+        {
+            throw exception_factory(dependency, e);
+        }
     }
   }
 }
