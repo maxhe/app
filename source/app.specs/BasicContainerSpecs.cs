@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Runtime.Serialization;
 using Machine.Specifications;
 using app.utility.containers;
 using developwithpassion.specifications.extensions;
@@ -19,6 +17,30 @@ namespace app.specs
 
     public class when_fetching_a_dependency : concern
     {
+      public class at_runtime
+      {
+        Establish c = () =>
+        {
+          factories = depends.on<IFindDependencyFactories>();
+          the_connection = fake.an<IDbConnection>();
+          factory = fake.an<ICreateOneDependency>();
+
+          factory.setup(x => x.create()).Return(the_connection);
+          factories.setup(x => x.get_the_factory_that_can_create(typeof(IDbConnection))).Return(factory);
+        };
+
+        Because b = () =>
+          result = sut.an(typeof(IDbConnection));
+
+        It should_return_the_item_created_by_the_factory_that_can_create_that_dependency = () =>
+          result.ShouldEqual(the_connection);
+
+        static IFindDependencyFactories factories;
+        static ICreateOneDependency factory;
+        static object result;
+        static IDbConnection the_connection;
+      }
+
       public class and_it_has_the_factory_that_can_create_the_dependency
       {
         Establish c = () =>
@@ -42,10 +64,9 @@ namespace app.specs
         static ICreateOneDependency factory;
         static IDbConnection result;
         static IDbConnection the_connection;
-
       }
 
-      public class and_the_factory_that_can_create_the_dependency_throws_an_error_while_creating_it 
+      public class and_the_factory_that_can_create_the_dependency_throws_an_error_while_creating_it
       {
         Establish c = () =>
         {
@@ -54,7 +75,7 @@ namespace app.specs
           inner_exception = new Exception();
           the_custom_exception = new Exception();
 
-          depends.on<ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem>((type,inner) =>
+          depends.on<ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem>((type, inner) =>
           {
             type.ShouldEqual(typeof(IDbConnection));
             inner.ShouldEqual(inner_exception);
