@@ -5,15 +5,25 @@ namespace app.utility.containers
   public class BasicContainer : IFetchDependencies
   {
     IFindDependencyFactories factories;
+    ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem exception_factory;
 
-    public BasicContainer(IFindDependencyFactories factories)
+      public BasicContainer(IFindDependencyFactories factories, ICreateTheExceptionWhenAnDependencyFactoryCantCreateItsItem exception_factory)
     {
-      this.factories = factories;
+        this.factories = factories;
+        this.exception_factory = exception_factory;
     }
 
-    public TDependency an<TDependency>()
+      public TDependency an<TDependency>()
     {
-      return (TDependency) factories.get_the_factory_that_can_create(typeof(TDependency)).create();
+        try
+        {
+            return (TDependency) factories.get_the_factory_that_can_create(typeof(TDependency)).create();
+        }
+        catch (Exception e)
+        {
+           throw exception_factory(typeof(TDependency), e);
+        }
+        
     }
 
     public object an(Type dependency)
