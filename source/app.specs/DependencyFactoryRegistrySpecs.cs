@@ -1,4 +1,7 @@
-﻿ using Machine.Specifications;
+﻿ using System.Collections.Generic;
+ using System.Data;
+ using System.Linq;
+ using Machine.Specifications;
  using app.utility.containers;
  using developwithpassion.specifications.rhinomocks;
  using developwithpassion.specifications.extensions;
@@ -15,10 +18,38 @@ namespace app.specs
     }
 
    
-    public class when_ : concern
+    public class when_finding_a_dependency_factory_to_resolve_a_dependency : concern
     {
-        
-      It first_observation = () =>        
+
+        Establish c = () =>
+        {
+            
+        };
+
+        Because b = () =>
+            result = sut.get_the_factory_that_can_create(typeof(IDbConnection));
+
+        static ICreateOneDependency result;
+
+        public class and_it_has_the_dependency
+        {
+            Establish c = () =>
+            {
+                the_dependency_factory = fake.an<ICreateOneDependency>();
+                all_the_dependency_factories = Enumerable.Range(1, 10).Select(x => fake.an<ICreateOneDependency>()).ToList();
+                all_the_dependency_factories.Add(the_dependency_factory);
+
+                the_dependency_factory.setup(x => x.can_create())
+                depends.on<IEnumerable<ICreateOneDependency>>();
+                
+            };
+
+            It should_return_the_factory_that_can_create_the_dependency = () =>
+                result.ShouldEqual(the_dependency_factory);
+
+            static ICreateOneDependency the_dependency_factory;
+            static List<ICreateOneDependency> all_the_dependency_factories;
+        }
         
     }
   }
