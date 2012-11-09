@@ -113,7 +113,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomaticDependencyFactorySpecs.cs" />
     <Compile Include="BasicContainerSpecs.cs" />
+    <Compile Include="BasicDependencyFactorySpecs.cs" />
     <Compile Include="BasicHandlerSpecs.cs" />
     <Compile Include="CalculatorSpecs.cs" />
     <Compile Include="CommandRegistrySpecs.cs" />
@@ -122,6 +124,7 @@
     <Compile Include="DependencyFactoryRegistrySpecs.cs" />
     <Compile Include="DependencyFactorySpecs.cs" />
     <Compile Include="SecuredQuerySpecs.cs" />
+    <Compile Include="StartupSpecs.cs" />
     <Compile Include="ViewAReportSpecs.cs" />
     <Compile Include="FrontControllerSpecs.cs" />
     <Compile Include="MessageGeneratorSpecs.cs" />

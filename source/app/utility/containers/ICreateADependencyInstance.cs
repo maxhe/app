@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace app.utility.containers
+﻿namespace app.utility.containers
 {
-    public delegate object ICreateADependencyInstance(Type dependency);
-
+  public interface ICreateADependencyInstance
+  {
+    object create();
+  }
 }

@@ -2,16 +2,25 @@
 
 namespace app.utility.containers
 {
-  public class DependencyFactory:ICreateOneDependency
+  public class DependencyFactory : ICreateOneDependency
   {
-    public object create()
+    ICreateADependencyInstance real_factory;
+    IDetermineIfATypeCanBeCreated creation_spec;
+
+    public DependencyFactory(ICreateADependencyInstance real_factory, IDetermineIfATypeCanBeCreated creation_spec)
     {
-      throw new NotImplementedException();
+      this.real_factory = real_factory;
+      this.creation_spec = creation_spec;
     }
 
-    public bool can_create(Type type)
+    public object create()
     {
-      throw new NotImplementedException();
+      return real_factory.create();
+    }
+
+    public bool can_create(Type dependency)
+    {
+      return creation_spec(dependency);
     }
   }
 }
